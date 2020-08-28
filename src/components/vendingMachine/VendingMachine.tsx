@@ -111,7 +111,8 @@ function VendingMachine(props: VendingMachineProps): JSX.Element {
   const [countValue, setCountValue] = useState(0);
   const [loadAllData, setLoadAllData] = useState(true);
   const [updateData, setUpdateData] = useState(true);
-  const [openRestock, setOpenRestock] = React.useState(false);
+  const [openRestock, setOpenRestock] = useState(false);
+  const [openMachineLow, setOpenMachineLow] = useState(false);
   const [returnCash, setReturnCash] = useState('');
   const [snikerIssued, setSnikerIssued] = useState('');
   const maxAllowedBars = 10;
@@ -197,6 +198,7 @@ function VendingMachine(props: VendingMachineProps): JSX.Element {
       if (data.coin === '$2') data.quantity = countDollar2Coins;
     });
     if (machineData.product.quantity !== 0) machineData.product.quantity -= 1;
+    if (machineData.product.quantity === 0) setOpenMachineLow(true);
     actions.updateDatas(machineData);
     setLoadAllData(!flag);
   };
@@ -290,6 +292,10 @@ function VendingMachine(props: VendingMachineProps): JSX.Element {
 
   const handleRestockClose = () => {
     setOpenRestock(false);
+  };
+
+  const handleMachineLowClose = () => {
+    setOpenMachineLow(false);
   };
 
   return (
@@ -416,6 +422,11 @@ function VendingMachine(props: VendingMachineProps): JSX.Element {
           <Snackbar open={openRestock} autoHideDuration={1000} onClose={handleRestockClose}>
             <Alert severity="success">
               Machine restocked successfully!
+            </Alert>
+          </Snackbar>
+          <Snackbar open={openMachineLow} autoHideDuration={2000} onClose={handleMachineLowClose}>
+            <Alert severity="error">
+              Machine running low!
             </Alert>
           </Snackbar>
         </Grid>
